@@ -10,14 +10,26 @@ var server = http.createServer(function(req, res){
 
   var filename = req.url.substring(1);
 
-  try{
-    var data = fs.readFileSync(path.join(home, filename));
-    res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'});
-    res.end(data);
-  }catch(err){
-    res.writeHead(404, {'Content-Type': 'text/html;charset=utf-8'});
-    res.end('<h1>' + filename + ' 파일을 찾을 수 없습니다.');
-  }
+  // 비동기 방식
+  fs.readFile(path.join(home, filename), function(err, data){
+    if(err){
+      res.writeHead(404, {'Content-Type': 'text/html;charset=utf-8'});
+      res.end('<h1>' + filename + ' 파일을 찾을 수 없습니다.');
+    }else{
+      res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'});
+      res.end(data);
+    }
+  });
+
+  // 동기 방식
+  // try{
+  //   var data = fs.readFileSync(path.join(home, filename));
+  //   res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'});
+  //   res.end(data);
+  // }catch(err){
+  //   res.writeHead(404, {'Content-Type': 'text/html;charset=utf-8'});
+  //   res.end('<h1>' + filename + ' 파일을 찾을 수 없습니다.');
+  // }
 
 });
 
