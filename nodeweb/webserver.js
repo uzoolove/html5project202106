@@ -1,31 +1,20 @@
 var http = require('http');
 var fs = require('fs');
 var path = require('path');
+// var mime = require('./mimetypes');
+var mime = require('mime');
 
-// JSON 표기법(JavaScript Object Notation)
-var mime = {
-  "html": "text/html",
-  "css": "text/css",
-  "js": "application/javascript",
-  "svg": "image/svg+xml",
-  // ......
-};
-
-function getMime(url){
-  // today.html -> "text/html"
-  // layout.css -> "text/css"
-  var extname = path.extname(url).substring(1);
-  return mime[extname];
-}
 var home = path.join(__dirname, 'design');
 var server = http.createServer(function(req, res){
   console.log(req.method, req.url, req.httpVersion);
-  console.log(req.headers);
+  console.log(req.headers['user-agent']);
   var filename = req.url.substring(1);
   if(filename == ''){
     filename = 'today.html';
   }
-  var mimeType = getMime(filename);
+  // var mimeType = mime.myMime(filename);
+  var mimeType = mime.getType(filename);
+
   // 비동기 방식
   fs.readFile(path.join(home, filename), function(err, data){
     if(err){
