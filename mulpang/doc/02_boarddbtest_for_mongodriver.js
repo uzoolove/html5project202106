@@ -58,7 +58,7 @@ var b3 = {no: 3, name: "lee", title: "그렇다면 두번째 글은...", content
 // 로그 메세지 출력
 function myLog(str, result){
 	clog.info(str);
-	clog.debug(util.inspect(result) + "\n");
+	clog.debug(util.inspect(result, {depth: 5}) + "\n");
 }
 
 // TODO 1. board 컬렉션에 데이터 등록
@@ -119,13 +119,19 @@ function todo6(){
 // TODO 7. 게시물 조회(lee가 작성한 데이터 1건 조회)
 // findOne({검색조건})
 function todo7(){
-	
+	db.board.findOne({name: 'lee'}, function(err, data){
+    myLog('TODO 7. 게시물 조회(lee가 작성한 데이터 1건 조회)', data);
+    todo8();
+  });
 }
 
 // TODO 8. 게시물 수정(3번 게시물의 내용 수정)
 // updateOne({검색조건}, {수정할 문서})
 function todo8(){
-	
+	db.board.updateOne({no: 3}, {$set: {content: '수정함.'}}, function(err, data){
+    clog.log(data.result);
+    list('TODO 8. 게시물 수정(3번 게시물의 내용 수정)', todo9);
+  });
 }
 
 // 전체 게시물을 조회하여 지정한 문자열을 출력하고
@@ -145,13 +151,23 @@ function todo9(){
     name: '이영희',
     content: '퍼가요~~~'
   };
+  db.board.updateOne({no: 1}, {$push: {comments: comment}}, function(err, data){
+    clog.log(data.result);
+    db.board.updateOne({no: 1}, {$push: {comments: comment}}, function(err, data){
+      clog.log(data.result);
+      list('TODO 9. 1번 게시물에 댓글 추가', todo10);
+    });
+  });
   
 }
 
 // TODO 10. 2번 게시물 삭제
 // deleteOne({검색 조건})
 function todo10(){
-	
+	db.board.deleteOne({no: 2}, function(err, data){
+    clog.log(data.result);
+    list('TODO 10. 2번 게시물 삭제');
+  });
 }
 
 
