@@ -1,4 +1,3 @@
-var MongoClient = require('mongodb').MongoClient;
 var clog = require('clog');
 var util = require('util');
 
@@ -24,7 +23,32 @@ switch(logLevel){
 
 var db;
 // DB 접속
+const MongoClient = require('mongodb').MongoClient;
+const assert = require('assert');
 
+// Connection URL
+const url = 'mongodb://localhost:27017';
+
+// Database Name
+const dbName = 'test3';
+const client = new MongoClient(url, { useUnifiedTopology: true });
+// Use connect method to connect to the server
+client.connect(function(err) {
+  assert.equal(null, err);
+  console.log('Connected successfully to server');
+
+  db = client.db(dbName);
+  db.dropDatabase();
+  db.board = db.collection('board');
+  db.coupon = db.collection('coupon');
+
+  setTimeout(function(){
+    client.close();
+  }, 1000);
+
+  todo1();
+  
+});
 
 // 등록할 게시물
 var b1 = {no: 1, name: "admin", title: "[공지]게시판 사용규칙 안내입니다.", content: "잘 쓰세요."};
@@ -40,37 +64,56 @@ function myLog(str, result){
 // TODO 1. board 컬렉션에 데이터 등록
 // insertOne({등록할 문서}), insertMany([{등록할 문서}, {등록할 문서}])
 function todo1(){
-	
+	db.board.insertOne(b1, function(){
+    db.board.insertMany([b2, b3], function(){
+      todo2();
+    });
+  });
 }
 
 // TODO 2. 모든 board 데이터의 모든 속성 조회
 // find()
 function todo2(){
-	
+	db.board.find().toArray(function(err, data){
+    myLog('TODO 2. 모든 board 데이터의 모든 속성 조회', data);
+    todo3();
+  });
 }
 
 // TODO 3. 데이터 조회(kim이 작성한 게시물 조회)
 // find({검색조건})
 function todo3(){
-	
+	db.board.find({name: 'kim'}).toArray(function(err, data){
+    myLog('TODO 3. 데이터 조회(kim이 작성한 게시물 조회)', data);
+    todo4();
+  });
 }
 
 // TODO 4. 모든 board 데이터의 작성자 속성만 조회(_id 포함)
 // find({검색조건}, {projection: {출력컬럼}})
 function todo4(){
-	
+  db.board.find({}, {projection: {name: 1}}).toArray(function(err, data){
+    myLog('TODO 4. 모든 board 데이터의 작성자 속성만 조회(_id 포함)', data);
+    todo5();
+  });
 }
 
 // TODO 5. kim이 작성한 게시물의 제목 조회(_id 미포함)
 // find({검색조건}, {projection: {출력컬럼}})
 function todo5(){
-	
+  db.board.find({name: 'kim'}, {projection: {_id: 0, title: 1}}).toArray(function(err, data){
+    myLog('TODO 5. kim이 작성한 게시물의 제목 조회(_id 미포함)', data);
+    todo6();
+  });
 }
 
 // TODO 6. 첫번째 게시물 조회(1건)
 // findOne()
 function todo6(){
-	
+	db.board.findOne(function(err, data){
+    myLog('TODO 6. 첫번째 게시물 조회(1건)', data);
+    todo7();
+  });
 }
 
 // TODO 7. 게시물 조회(lee가 작성한 데이터 1건 조회)
