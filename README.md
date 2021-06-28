@@ -22,7 +22,7 @@
 	* 터미널 종료후 다시 오픈
 	* View > Terminal 선택 후 오픈된 TERMINAL 탭 우측 상단에 cmd로 바뀌었는지 확인
 ## 소스코드 다운로드
-* [Download Pages](https://github.com/uzoolove/html5project202106/blob/master/sample)(마우스 오른쪽 버튼 > 새 탭에서 링크 열기) 이동 후 각 PPT 파일 선택해서 Download 버튼 클릭
+* [Download Pages](https://github.com/uzoolove/html5project202106/blob/master/sample)(마우스 오른쪽 버튼 > 새 탭에서 링크 열기) 이동 후 각 압축파일 선택해서 Download 버튼 클릭
 
 ## PPT 다운로드
 * [Download Pages](https://github.com/uzoolove/html5project202106/blob/master/PPT)(마우스 오른쪽 버튼 > 새 탭에서 링크 열기) 이동 후 각 PPT 파일 선택해서 Download 버튼 클릭
