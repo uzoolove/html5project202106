@@ -56,9 +56,26 @@ router.post('/purchase', function(req, res, next) {
   });
 });
 
-router.get('/*.html', function(req, res, next) {
-  var url = req.url.substring(1, req.url.indexOf('.html'));
-  res.render(url, { title: '오늘은 뭘파니?' });
+
+// 근처 메뉴
+router.get('/location', function(req, res, next){
+  res.render('location', {title: '근처 쿠폰', css: 'location.css', js: 'location.js'});
+});
+// 추천 메뉴
+router.get('/best', function(req, res, next){
+  res.render('best', {title: '추천 쿠폰', css: 'best.css', js: 'best.js'});
+});
+// top5 쿠폰 조회
+router.get('/topCoupon', function(req, res, next){
+  res.json([]);
+});
+// 모두 메뉴
+router.get('/all', function(req, res, next){
+  res.render('all', {title: '모든 쿠폰', css: 'all.css'});
+});
+// 쿠폰 남은 수량 조회
+router.get('/couponQuantity', function(req, res, next){
+  res.end('success');
 });
 
 module.exports = router;
