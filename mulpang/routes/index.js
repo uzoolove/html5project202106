@@ -12,21 +12,36 @@ router.get('/', function(req, res, next) {
 // 오늘 메뉴
 router.get('/today', function(req, res, next) {
   model.couponList(function(list){
-    res.render('today', { title: '오늘의 쿠폰', list: list });
+    res.render('today', { 
+      title: '오늘의 쿠폰', 
+      list: list,
+      css: 'today.css'
+    });
   });
 });
 
 // 상세 조회 화면
 router.get('/coupons/:_id', function(req, res, next) {
   model.couponDetail(req.params._id, function(coupon){
-    res.render('detail', { title: coupon.couponName, coupon, toStar: MyUtil.toStar });
+    res.render('detail', { 
+      title: coupon.couponName, 
+      coupon, 
+      toStar: MyUtil.toStar,
+      css: 'detail.css', 
+      js: 'detail.js' 
+    });
   });
 });
 
 // 구매 화면
 router.get('/purchases/:_id', function(req, res, next) {
   model.buyCouponForm(req.params._id, function(coupon){
-    res.render('buy', { title: coupon.couponName, coupon });
+    res.render('buy', { 
+      title: coupon.couponName, 
+      coupon, 
+      css: 'detail.css', 
+      js: 'buy.js' 
+    });
   });
 });
 
