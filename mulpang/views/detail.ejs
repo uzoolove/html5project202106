@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8">
-  <title>쿠폰 : 멀팡</title>
+  <title><%=title%> : 멀팡</title>
   <meta name="description" content="멀티 캠퍼스 HTML5 강의용 데모 사이트">
   <meta name="keywords" content="html5,css3,svg">
   <link rel="shortcut icon" href="/image/favicon.ico">
@@ -73,62 +73,64 @@
 				<h1 class="blind">쿠폰 상세 정보</h1>
 				<div class="coupon_list">
           <!-- 쿠폰 상세정보 출력 영역 -->
-          <article class="detail" data-couponid="coupon123">
-            <h1>디저트 마카롱</h1>
-            <img class="list_img" src="/image/coupon/coupon_16.jpg" alt="디저트 마카롱 메인 이미지">
+          <article class="detail" data-couponid="<%=coupon._id%>">
+            <h1><%=coupon.couponName%></h1>
+            <img class="list_img" src="/image/coupon/<%=coupon.image.main.file%>" alt="<%=coupon.image.main.desc%>">
             <img class="detail_img" 
-              src="/image/coupon/coupon_16_detail.jpg" 
-              alt="디저트 마카롱 상세 이미지">
+              src="/image/coupon/<%=coupon.image.detail.file%>" 
+              alt="<%=coupon.image.detail.desc%>">
             <section class="content">
-							<p class="note">
-                바삭하고 쫀득한 초코 마카롱과 망고 마카롱 사이에 새콤달콤한 패션망고크림과 상큼한 요거생크림, 신선한 과일을 담아낸 디저트
-							</p>
+							<p class="note"><%=coupon.desc%></p>
               <ul class="coupon_info">
-                <li class="cost">정상가격 : <del>5500원</del></li>
-                <li class="discount">할인가격 : <em>4700원</em></li>
+                <li class="cost">정상가격 : <del><%=coupon.primeCost%>원</del></li>
+                <li class="discount">할인가격 : <em><%=coupon.price%>원</em></li>
                 <li class="expire">유효기간 : 
-                  <time datetime="2099-01-01">2099-01-01</time> ~
-                  <time datetime="2099-12-31">2099-12-31</time>
+                  <time datetime="<%=coupon.useDate.start%>"><%=coupon.useDate.start%></time> ~
+                  <time datetime="<%=coupon.useDate.finish%>"><%=coupon.useDate.finish%></time>
                 </li>
               </ul>
               <ul class="coupon_current">
-                <li class="remain">잔여수량<span>0개</span></li>
-                <li class="term">판매기간<span>2099-12-31</span></li>
+                <li class="remain">잔여수량<span><%=coupon.quantity-coupon.buyQuantity%>개</span></li>
+                <li class="term">판매기간<span><%=coupon.saleDate.finish%></span></li>
               </ul>
-              <!-- <a href="/buy.html" class="buy">구매하기</a> -->
-							<span class="soldout">매진</span>
+              <% if(coupon.quantity > coupon.buyQuantity){ %>
+                <a href="/purchases/<%=coupon._id%>" class="buy">구매하기</a>
+              <% }else{ %>
+                <span class="soldout">매진</span>
+              <% } %>
             </section>
             <div class="coupon_tab">
 							<section class="gallery">
 								<h1 tabindex="0">갤러리</h1>
 								<div class="gallery_viewport">
 									<h1>동영상</h1>
-                  <img src="/image/no_video.jpg" alt="동영상 등록 안됨">
+                  <% if(coupon.video){ %>
+                    <video src="/video/<%=coupon.video.src%>" alt="<%=coupon.video.desc%>"></video>
+                  <% }else{ %>
+                    <img src="/image/no_video.jpg" alt="동영상 등록 안됨">
+                  <% } %>                  
 								</div>
 								<article>
 									<h1>포토 리스트</h1>
 									<ul class="photo_list">
-                    <!-- 포토 리스트 출력 영역 -->						
-                    <li>
-                      <a href="/image/coupon/coupon_16_1.jpg" 
-                          title="디저트 마카롱/그린티">
-                        <img src="/image/coupon/coupon_16_1.jpg" 
-                            alt="디저트 마카롱/그린티">
+                    <!-- 포토 리스트 출력 영역 -->		
+                    <% coupon.image.etc.forEach(function(img){ %>
+                      <li>
+                      <a href="/image/coupon/<%=img.file%>" 
+                          title="<%=img.desc%>">
+                        <img src="/image/coupon/<%=img.file%>" 
+                            alt="<%=img.desc%>">
                       </a>
-                    </li>                  
-                    <li>
-                      <a href="/image/coupon/coupon_16_2.jpg" 
-                          title="디저트 마카롱/스트로베리">
-                        <img src="/image/coupon/coupon_16_2.jpg" 
-                            alt="디저트 마카롱/스트로베리">
-                      </a>
-                    </li>                  
+                    </li>  
+                    <% }); %>
                   </ul>
-                  <div class="big_photo">
-                    <img width="300" height="250" 
-                      src="/image/coupon/coupon_16_1.jpg" 
-                      alt="디저트 마카롱/그린티">
-                  </div>
+                  <% if(coupon.image.etc.length > 0){ %>
+                    <div class="big_photo">
+                      <img width="300" height="250" 
+                        src="/image/coupon/<%=coupon.image.etc[0].file%>" 
+                        alt="<%=coupon.image.etc[0].desc%>">
+                    </div>
+                  <% } %>
 								</article>
 							</section>
 							<section class="reply tab_off">
