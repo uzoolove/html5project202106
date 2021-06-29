@@ -1,3 +1,4 @@
+const e = require('express');
 var express = require('express');
 var router = express.Router();
 var model = require('../model/mulpangDao');
@@ -19,6 +20,24 @@ router.get('/today', function(req, res, next) {
 router.get('/coupons/:_id', function(req, res, next) {
   model.couponDetail(req.params._id, function(coupon){
     res.render('detail', { title: coupon.couponName, coupon, toStar: MyUtil.toStar });
+  });
+});
+
+// 구매 화면
+router.get('/purchases/:_id', function(req, res, next) {
+  model.buyCouponForm(req.params._id, function(coupon){
+    res.render('buy', { title: coupon.couponName, coupon });
+  });
+});
+
+// 구매 하기
+router.post('/purchase', function(req, res, next) {
+  model.buyCoupon(req.body, function(err, result){
+    if(err){
+      res.json({errors: err});
+    }else{
+      res.end('success');
+    }
   });
 });
 

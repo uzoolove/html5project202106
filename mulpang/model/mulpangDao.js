@@ -104,7 +104,9 @@ module.exports.buyCouponForm = function(_id, cb){
     'image.detail': 1
 	};
 	// TODO 쿠폰 정보를 조회한다.
-	
+	db.coupon.findOne({_id: ObjectId(_id)}, {projection: fields}, function(err, coupon){
+    cb(coupon);
+  });
 };
 
 // 쿠폰 구매
@@ -125,8 +127,21 @@ module.exports.buyCoupon = function(params, cb){
 	};
 
 	// TODO 구매 정보를 등록한다.
+  db.purchase.insertOne(document, function(err, result){
+    if(err){
+      clog.error(err);
+      cb({message: '쿠폰 구매에 실패했습니다. 잠시후 다시 시도하시기 바랍니다.'});
+    }else{
+	    // TODO 쿠폰 구매 건수를 하나 증가시킨다.
+      db.coupon.updateOne({_id: document.couponId}
+                      , {$inc: {buyQuantity: document.quantity}}
+                      , function(){
+        cb(null, document.couponId);
+      });
+    }
+  });
 	
-	// TODO 쿠폰 구매 건수를 하나 증가시킨다.
+
 	
 };	
 	
