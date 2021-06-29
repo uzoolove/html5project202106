@@ -11,7 +11,14 @@ router.get('/', function(req, res, next) {
 router.get('/today', function(req, res, next) {
   model.couponList(function(list){
     res.render('today', { title: '오늘의 쿠폰', list: list });
-  });  
+  });
+});
+
+// 상세 조회 화면
+router.get('/coupons/:_id', function(req, res, next) {
+  model.couponDetail(req.params._id, function(coupon){
+    res.render('detail', { title: coupon.couponName, coupon });
+  });
 });
 
 router.get('/*.html', function(req, res, next) {
