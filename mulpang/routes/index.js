@@ -4,7 +4,7 @@ var model = require('../model/mulpangDao');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: '멀팡' });
+  res.redirect('/today');
 });
 
 // 오늘 메뉴
