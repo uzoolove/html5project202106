@@ -30,7 +30,7 @@ const assert = require('assert');
 const url = 'mongodb://localhost:27017';
 
 // Database Name
-const dbName = 'test3';
+const dbName = 'mulpang';
 const client = new MongoClient(url, { useUnifiedTopology: true });
 // Use connect method to connect to the server
 client.connect(function(err) {
@@ -38,7 +38,7 @@ client.connect(function(err) {
   console.log('Connected successfully to server');
 
   db = client.db(dbName);
-  db.dropDatabase();
+  // db.dropDatabase();
   db.board = db.collection('board');
   db.coupon = db.collection('coupon');
 
@@ -46,7 +46,7 @@ client.connect(function(err) {
     client.close();
   }, 1000);
 
-  todo1();
+  todo11();
   
 });
 
@@ -170,7 +170,21 @@ function todo10(){
   });
 }
 
-
+// TODO 11. mulpang DB coupon collection 사용
+// 1. 모든 쿠폰 목록을 조회한다.
+// 2. 쿠폰명, 판매시작일만 출력.
+// 3. 판매시작일의 내림차순으로 정렬.
+// 4. 한페이지당 5건일때 2페이지를 조회.
+function todo11(){
+  db.coupon.find()
+      .project({_id: 0, couponName: 1, 'saleDate.start': 1})
+      .sort({'saleDate.start': -1}) // -1: 내림차순, 1: 오름차순
+      .skip(5)
+      .limit(5)
+      .toArray(function(err, data){
+    myLog('모든 쿠폰', data);
+  });
+}
 
 
 

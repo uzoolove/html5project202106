@@ -5,11 +5,10 @@ var clog = require("clog");
 clog.configure({"log level": 5});
 
 // DB 접속
-var client;
 var db;
-MongoClient.connect('mongodb://localhost:27017', { useNewUrlParser: true, useUnifiedTopology: true }, function(err, result){
+var client = new MongoClient('mongodb://localhost:27017', { useUnifiedTopology: true });
+client.connect(function(err){
 	if(err) console.error(err);
-	client = result;
 	db = client.db('mulpang');
 	// 현재 DB 삭제
 	db.dropDatabase(function(err){
