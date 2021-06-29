@@ -42,7 +42,9 @@
 								<div class="gallery_viewport">
 									<h1>동영상</h1>
                   <% if(coupon.video){ %>
-                    <video src="/video/<%=coupon.video.src%>" alt="<%=coupon.video.desc%>"></video>
+                    <video src="/video/<%=coupon.video.src%>" alt="<%=coupon.video.desc%>"
+                        controls poster="/video/<%=coupon.video.poster%>" preload="none"
+                      ></video>
                   <% }else{ %>
                     <img src="/image/no_video.jpg" alt="동영상 등록 안됨">
                   <% } %>                  
