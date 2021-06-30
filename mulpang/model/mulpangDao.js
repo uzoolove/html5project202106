@@ -86,13 +86,13 @@ module.exports.couponDetail = function(_id, cb){
   }]).next(function(err, coupon){
     clog.debug(coupon);
     cb(coupon);
+
+    // 뷰 카운트를 하나 증가시킨다.
+    db.coupon.updateOne({_id: coupon._id}, {$inc: {viewCount: 1}}, function(){
+      // 웹소켓으로 수정된 조회수 top5를 전송한다.
+      
+    });
   });
-
-	// 뷰 카운트를 하나 증가시킨다.
-	
-	// 웹소켓으로 수정된 조회수 top5를 전송한다.
-	
-
 };
 
 // 구매 화면에 보여줄 쿠폰 정보 조회
@@ -148,7 +148,14 @@ module.exports.buyCoupon = function(params, cb){
 	
 // 추천 쿠폰 조회
 var topCoupon = module.exports.topCoupon = function(condition, cb){
-	
+	var query = {};
+  var fields = {couponName: 1};
+  fields[condition] = 1;
+  var order = {};
+  order[condition] = -1;
+  db.coupon.find(query).project(fields).sort(order).limit(5).toArray(function(err, data){
+    cb(data);
+  });
 };
 
 // 지정한 쿠폰 아이디 목록을 받아서 남은 수량을 넘겨준다.

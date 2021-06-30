@@ -20,20 +20,30 @@ function testChart(){
 					, {couponName: '치맥', buyQuantity: 50}];
 	
 	drawSaleGraph(data);	
-	// drawPointGraph(data);
-	// drawViewGraph(data);
-	// drawReplyGraph(data);
+	drawPointGraph(data);
+	drawViewGraph(data);
+	drawReplyGraph(data);
 }
 
 $(function(){
-	testChart();
+	// testChart();
+  $.getJSON('topCoupon', {condition: 'buyQuantity'}, drawSaleGraph);
+  $.getJSON('topCoupon', {condition: 'satisfactionAvg'}, drawPointGraph);
+  $.getJSON('topCoupon', {condition: 'viewCount'}, drawViewGraph);
+  $.getJSON('topCoupon', {condition: 'epilogueCount'}, drawReplyGraph);
 });
 
 // 판매순 그래프를 그린다.(Canvas)
 function drawSaleGraph(data){
 	var context = document.querySelector('#graph_by_sale').getContext('2d');
 	// TODO x, y 축 그리기
+  context.beginPath();
+  context.moveTo(70, 10);
+  context.lineTo(70, 231);
+  context.lineTo(470, 231);
 
+  context.lineWidth = 2;
+  context.stroke();
 
 	// 막대그래프 그리기
 	var r = 210 / data[0].buyQuantity; // 높이 비율
@@ -48,7 +58,7 @@ function drawSaleGraph(data){
 		// 채우기 스타일 지정
 		context.fillStyle = 'rgba(186, 68, 10, 0.' + (7-i) + ')';
 		// TODO 막대 그래프 그리기
-		
+		context.fillRect(x, y, barW, barH);
 		
     // 텍스트 스타일 지정
     context.font = '12px "돋움, dotum, 굴림, gulim, sans-serif"';
@@ -56,7 +66,8 @@ function drawSaleGraph(data){
 		context.textAlign = 'center';
 		
 		// TODO 레이블 출력
-    
+    context.fillText(coupon.couponName, x+barW/2, 246);
+    context.fillText(coupon.buyQuantity, x+barW/2, y);
   });
 }
 
@@ -66,8 +77,8 @@ function drawPointGraph(data){
   var points = [];
   data.forEach(function(coupon){
     labels.push(coupon.couponName);
-		// points.push(coupon.satisfactionAvg * 20);
-		points.push(coupon.buyQuantity);
+		points.push(coupon.satisfactionAvg * 20);
+		// points.push(coupon.buyQuantity);
   });
   var hbar = new RGraph.HBar('graph_by_point', points);
   hbar.Set('chart.labels', labels);
@@ -104,12 +115,12 @@ function drawViewGraph(data){
   }
   data.forEach(function(coupon){
     labels.push(coupon.couponName);
-		// counts.push(coupon.viewCount);
-		counts.push(coupon.buyQuantity);
+		counts.push(coupon.viewCount);
+		// counts.push(coupon.buyQuantity);
     if(beforeCoupons.length < data.length){
       beforeCoupons.push(coupon._id);
-			// beforeCounts.push(coupon.viewCount);
-			beforeCounts.push(coupon.buyQuantity);
+			beforeCounts.push(coupon.viewCount);
+			// beforeCounts.push(coupon.buyQuantity);
     }
   });
   var chartData = {
@@ -144,8 +155,8 @@ function drawReplyGraph(data){
   var dataSet = [];
   data.forEach(function(coupon){
     dataSet.push({			
-			// data: [[0, coupon.epilogueCount]], 
-			data: [[0, coupon.buyQuantity]], 
+			data: [[0, coupon.epilogueCount]], 
+			// data: [[0, coupon.buyQuantity]], 
       label: coupon.couponName
     });
   });
