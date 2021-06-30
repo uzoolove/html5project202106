@@ -59,7 +59,9 @@ router.post('/purchase', function(req, res, next) {
 
 // 근처 메뉴
 router.get('/location', function(req, res, next){
-  res.render('location', {title: '근처 쿠폰', css: 'location.css', js: 'location.js'});
+  model.couponList(function(list){
+    res.render('location', {title: '근처 쿠폰', css: 'location.css', js: 'location.js', list});
+  });
 });
 // 추천 메뉴
 router.get('/best', function(req, res, next){

@@ -50,11 +50,12 @@ module.exports.couponList = function(cb){
 	};
 	
 	// TODO 전체 쿠폰 목록을 조회한다.
-  var count = 5;
+  var count = 0;
 	var cursor = db.coupon.find(query);
   cursor.project(fields).limit(count).toArray(function(err, list){
     if(err) clog.error(err);
-    clog.debug(util.inspect(list, {depth: 5}));
+    // clog.debug(util.inspect(list, {depth: 5}));
+    clog.debug(list.length + '건 조회.');
     cb(list);
   });
 };
