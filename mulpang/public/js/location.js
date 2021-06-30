@@ -27,14 +27,27 @@ function initMap(){
   };
   map = new google.maps.Map(mapContainer, mapOptions);
 	// 1.2 현재 위치 찾기
-	
+	window.navigator.geolocation.getCurrentPosition(success, fail);
+
 	function success(position){
 		// 1.3 지도를 현재 위치로 이동
-		
+		var here = {lat: position.coords.latitude, lng: position.coords.longitude};
+    map.setCenter(here);
 		// 1.4 현재 위치에 마커 표시
-		
+		new google.maps.Marker({
+      map: map,
+      position: here
+    });
 		// 1.5 현재 위치의 오차 표시
-		
+		new google.maps.Circle({
+      map: map,
+      center: here,
+      radius: position.coords.accuracy,
+      strokeColor: 'blue',
+      strokeOpacity: 0.2,
+      fillColor: 'blue',
+      fillOpacity: 0.1
+    });
 	}
 
 	function fail(err){
