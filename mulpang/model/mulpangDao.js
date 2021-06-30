@@ -61,7 +61,7 @@ module.exports.couponList = function(cb){
 };
 
 // 쿠폰 상세 조회
-module.exports.couponDetail = function(_id, cb){
+module.exports.couponDetail = function(io, _id, cb){
 	// coupon, shop, epilogue 조인
 	db.coupon.aggregate([{
     $match: {_id: ObjectId(_id)}
@@ -90,7 +90,9 @@ module.exports.couponDetail = function(_id, cb){
     // 뷰 카운트를 하나 증가시킨다.
     db.coupon.updateOne({_id: coupon._id}, {$inc: {viewCount: 1}}, function(){
       // 웹소켓으로 수정된 조회수 top5를 전송한다.
-      
+      topCoupon('viewCount', function(data){
+        io.emit('top5', data);
+      });
     });
   });
 };

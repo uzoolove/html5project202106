@@ -22,7 +22,7 @@ router.get('/today', function(req, res, next) {
 
 // 상세 조회 화면
 router.get('/coupons/:_id', function(req, res, next) {
-  model.couponDetail(req.params._id, function(coupon){
+  model.couponDetail(req.app.get('socketio'), req.params._id, function(coupon){
     res.render('detail', { 
       title: coupon.couponName, 
       coupon, 
