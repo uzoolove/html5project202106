@@ -18,6 +18,7 @@ Util.require('https://maps.googleapis.com/maps/api/js?key=AIzaSyBoXv_S_ciBM323Y3
 
 // 1. 지도를 보여주고 현재 위치 찾기
 var map;
+var search = location.search.substring(1);
 function initMap(){
 	// 1.1 구글맵 로딩
 	var mapContainer = document.querySelector('#location_map');
@@ -25,6 +26,15 @@ function initMap(){
     center: {lat: 37.5270988891514, lng: 127.0283885096422},
     zoom: 14
   };
+
+  if(search){
+    var qsArray = search.split(',');
+    mapOptions = {
+      center: {lat: parseFloat(qsArray[0]), lng: parseFloat(qsArray[1])},
+      zoom: parseInt(qsArray[2])
+    };
+  }
+
   map = new google.maps.Map(mapContainer, mapOptions);
 	// 1.2 현재 위치 찾기
 	window.navigator.geolocation.getCurrentPosition(success, fail);
@@ -32,7 +42,7 @@ function initMap(){
 	function success(position){
 		// 1.3 지도를 현재 위치로 이동
 		var here = {lat: position.coords.latitude, lng: position.coords.longitude};
-    map.setCenter(here);
+    if(!search) map.setCenter(here);
 		// 1.4 현재 위치에 마커 표시
 		new google.maps.Marker({
       map: map,
@@ -117,7 +127,10 @@ function addCouponToMap(){
 		// 첫번째 쿠폰으로 슬라이더 이동
 		slide(0);
 		// 현재 위치를 history에 기록
-		
+		var center = map.getCenter();
+    var qs = center.lat() + ',' + center.lng() + ',' + map.getZoom();
+    var url = 'location?' + qs;
+    history.replaceState({}, 'map', url);
 	}
 
 	// 지도 로딩완료 이벤트
