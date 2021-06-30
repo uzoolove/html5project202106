@@ -11,7 +11,7 @@ router.get('/', function(req, res, next) {
 
 // 오늘 메뉴
 router.get('/today', function(req, res, next) {
-  model.couponList(function(list){
+  model.couponList(req.query, function(list){
     res.render('today', { 
       title: '오늘의 쿠폰', 
       list: list,
@@ -59,7 +59,7 @@ router.post('/purchase', function(req, res, next) {
 
 // 근처 메뉴
 router.get('/location', function(req, res, next){
-  model.couponList(function(list){
+  model.couponList(null, function(list){
     res.render('location', {title: '근처 쿠폰', css: 'location.css', js: 'location.js', list});
   });
 });
@@ -75,7 +75,7 @@ router.get('/topCoupon', function(req, res, next){
 });
 // 모두 메뉴
 router.get('/all', function(req, res, next){
-  model.couponList(function(list){
+  model.couponList(req.query, function(list){
     res.render('all', {title: '모든 쿠폰', css: 'all.css', list});
   });  
 });
