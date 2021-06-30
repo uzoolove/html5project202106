@@ -20,7 +20,12 @@ Util.require('https://maps.googleapis.com/maps/api/js?key=AIzaSyBoXv_S_ciBM323Y3
 var map;
 function initMap(){
 	// 1.1 구글맵 로딩
-	
+	var mapContainer = document.querySelector('#location_map');
+  var mapOptions = {
+    center: {lat: 37.5270988891514, lng: 127.0283885096422},
+    zoom: 14
+  };
+  map = new google.maps.Map(mapContainer, mapOptions);
 	// 1.2 현재 위치 찾기
 	
 	function success(position){
