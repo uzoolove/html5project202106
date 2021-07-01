@@ -15,7 +15,9 @@ router.get('/today', function(req, res, next) {
     res.render('today', { 
       title: '오늘의 쿠폰', 
       list: list,
-      css: 'today.css'
+      css: 'today.css',
+      query: req.query, 
+      options: MyUtil.generateOptions
     });
   });
 });
@@ -76,7 +78,13 @@ router.get('/topCoupon', function(req, res, next){
 // 모두 메뉴
 router.get('/all', function(req, res, next){
   model.couponList(req.query, function(list){
-    res.render('all', {title: '모든 쿠폰', css: 'all.css', list});
+    res.render('all', {
+      title: '모든 쿠폰', 
+      css: 'all.css', 
+      list, 
+      query: req.query, 
+      options: MyUtil.generateOptions
+    });
   });  
 });
 // 쿠폰 남은 수량 조회
