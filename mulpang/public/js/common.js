@@ -97,5 +97,20 @@ $(function(){
 
 // 로그인 이벤트 등록
 common.login.setLoginEvent = function(){
-  
+  $('#simple_login').submit(function(){
+    $.ajax({
+      type: 'post',
+      url: '/users/simpleLogin',
+      data: $(this).serialize(),
+      success: function(result){
+        if(result.errors){
+          alert(result.errors.message);
+        }else{
+          alert('로그인 되었습니다.');
+          location.reload();
+        }
+      }
+    });
+    return false;
+  });
 };
