@@ -108,7 +108,13 @@ router.get('/all', function(req, res, next){
 });
 // 쿠폰 남은 수량 조회
 router.get('/couponQuantity', function(req, res, next){
-  res.end('success');
+  var idList = req.query.couponIdList.split(',');
+  model.couponQuantity(idList, function(list){
+    res.contentType('text/event-stream');
+    res.write('data:' + JSON.stringify(list) + '\n');
+    res.write('retry:10000\n');
+    res.end('\n');
+  });
 });
 
 module.exports = router;

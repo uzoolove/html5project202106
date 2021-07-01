@@ -9,8 +9,22 @@ $(function(){
 
 // 관심쿠폰을 보여준다.
 common.cart.showCart = function(){
-  // var cartElement = '<li data-couponid="' + couponId + '"><a href="/coupons/' + couponId + '"><img src="' + coupon.img + '" alt="' + coupon.name + '"></a><button class="cart_close">관심쿠폰 삭제</button></li>';
-  
+  var cartList = $('#cart > ul').empty();
+  var cart = localStorage.getItem('cart');
+  if(cart){
+    cart = JSON.parse(cart);
+    for(var couponId in cart){
+      if(couponId != 'length'){
+        var coupon = cart[couponId];
+        var cartElement = '<li data-couponid="' + couponId + '"><a href="/coupons/' + couponId + '"><img src="' + coupon.img + '" alt="' + coupon.name + '"></a><button class="cart_close">관심쿠폰 삭제</button></li>';
+        cartList.append(cartElement);
+      }
+    }
+    $('#cart .interest_cnt').text(cart.length);
+    common.cart.setRemoveCartEvent();
+
+    common.cart.requestQuantity();
+  }
 };
 
 // 관심쿠폰 삭제 이벤트
@@ -65,7 +79,7 @@ common.cart.requestQuantity = function(){
 
 // 바탕화면 알림 서비스를 보여준다.
 common.cart.showNoti = function(noti){	
-	
+	console.log(noti);
 };
 
 
