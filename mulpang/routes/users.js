@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var path = require('path');
 var multer = require('multer');
+var model = require('../model/mulpangDao');
 
 // 회원 가입 화면
 router.get('/new', function(req, res, next) {
@@ -16,7 +17,13 @@ router.post('/profileUpload', multer({dest: tmp/*, limits: {fileSize: 1024*1024*
 });
 // 회원 가입 요청
 router.post('/new', function(req, res, next) {
-  res.end('success');
+  model.registMember(req.body, function(err, result){
+    if(err){
+      res.json({errors: err});
+    }else{
+      res.end('success');
+    }
+  });  
 });
 // 간편 로그인
 router.post('/simpleLogin', function(req, res, next) {

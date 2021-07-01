@@ -20,7 +20,12 @@ function registMember(){
 			data: $(this).serialize(),			
 			success: function(result){
 				// TODO 가입 결과 출력
-				
+				if(result.errors){
+          alert(result.errors.message);
+        }else{
+          alert('회원 가입이 완료되었습니다.');
+          location.href = '/';
+        }
 			}
 		});
 	}
