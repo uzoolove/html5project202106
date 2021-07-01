@@ -2,10 +2,10 @@ Util.require('common_upload.js');
 
 $(function(){	
 	// TODO 프로필 이미지 선택 시(common_upload.js의 uploadProfileImage 함수를 호출한다.)
-	
+	$('#profile').change(uploadProfileImage);
 	
 	// TODO 회원 가입 버튼 클릭 이벤트
-	
+	$('.form_section > form').submit(registMember);
 });
 
 // 회원 가입

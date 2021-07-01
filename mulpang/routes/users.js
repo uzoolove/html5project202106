@@ -1,13 +1,18 @@
 var express = require('express');
 var router = express.Router();
+var path = require('path');
+var multer = require('multer');
 
 // 회원 가입 화면
 router.get('/new', function(req, res, next) {
   res.render('join', {title: '회원 가입', js: 'join.js'});
 });
+
+var tmp = path.join(__dirname, '..', 'public', 'tmp');
 // 프로필 이미지 업로드
-router.post('/profileUpload', function(req, res, next) {
-  res.end('tmpfile.png');   // 임시 파일명 응답
+router.post('/profileUpload', multer({dest: tmp}).single('profile'), function(req, res, next) {
+  console.log(req.file);
+  res.end(req.file.filename);   // 임시 파일명 응답
 });
 // 회원 가입 요청
 router.post('/new', function(req, res, next) {
