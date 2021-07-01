@@ -226,7 +226,7 @@ module.exports.registMember = function(params, cb){
     _id: params._id,
     password: params.password,
     profileImage: params._id,
-    regDate: MyUtil.getTime()
+    regDate: new Date()
   };
   db.member.insertOne(member, function(err, result){
     if(err && err.code == 11000){
