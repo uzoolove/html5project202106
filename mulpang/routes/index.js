@@ -11,7 +11,26 @@ router.get('/', function(req, res, next) {
 
 // 오늘 메뉴
 router.get('/today', function(req, res, next) {
+  if(req.query.page){
+    req.query.page = parseInt(req.query.page);
+  }else{
+    req.query.page = 1;
+    req.url += (req.query.date?'&':'?')+'page=1';
+    // if(req.query.date){
+    //   req.url += '&page=1';
+    // }else{
+    //   req.url += '?page=1';
+    // }
+  }
+
   model.couponList(req.query, function(list){
+    list.page = {};
+    if(req.query.page > 1){
+      list.page.pre = req.url.replace('page='+req.query.page, 'page='+(req.query.page-1));
+    }
+    if(req.query.page < list.totalPage){
+      list.page.next = req.url.replace('page='+req.query.page, 'page='+(req.query.page+1));
+    }
     res.render('today', { 
       title: '오늘의 쿠폰', 
       list: list,

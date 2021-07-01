@@ -76,13 +76,22 @@ module.exports.couponList = function(qs, cb){
 	
 	// TODO 전체 쿠폰 목록을 조회한다.
   var count = 0;
+  var offset = 0;
+  if(qs.page){
+    count = 5;
+    offset = (qs.page-1)*count;
+  }
 	var cursor = db.coupon.find(query);
-  cursor.project(fields).limit(count).sort(orderBy).toArray(function(err, list){
-    if(err) clog.error(err);
-    // clog.debug(util.inspect(list, {depth: 5}));
-    clog.debug(list.length + '건 조회.');
-    cb(list);
+  cursor.count(function(err, totalCount){
+    cursor.project(fields).skip(offset).limit(count).sort(orderBy).toArray(function(err, list){
+      if(err) clog.error(err);
+      // clog.debug(util.inspect(list, {depth: 5}));
+      clog.debug(list.length + '건 조회.');
+      list.totalPage = Math.floor((totalCount+count-1)/count);
+      cb(list);
+    });
   });
+
 };
 
 // 쿠폰 상세 조회
