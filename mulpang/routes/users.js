@@ -10,7 +10,7 @@ router.get('/new', function(req, res, next) {
 
 var tmp = path.join(__dirname, '..', 'public', 'tmp');
 // 프로필 이미지 업로드
-router.post('/profileUpload', multer({dest: tmp}).single('profile'), function(req, res, next) {
+router.post('/profileUpload', multer({dest: tmp/*, limits: {fileSize: 1024*1024*10}*/}).single('profile'), function(req, res, next) {
   console.log(req.file);
   res.end(req.file.filename);   // 임시 파일명 응답
 });
