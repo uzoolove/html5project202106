@@ -20,8 +20,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(session({
-  cookie: {maxAge: 1000*60},
+// "/couponQuantity"로 시작하지 않는 url
+app.use(/^((?!\/couponQuantity).)*$/, session({
+  cookie: {maxAge: 1000*60*60*2},
   secret: 'some seed text',
   rolling: true,  // 매 요청마다 세션 갱신
   resave: false,  // 세션이 수정되지 않으면 서버에 다시 저장하지 않음
