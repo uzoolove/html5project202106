@@ -73,11 +73,25 @@ router.get('/', checklogin, function(req, res, next) {
 });
 // 회원 정보 수정
 router.put('/', checklogin, function(req, res, next) {
-  res.end('success');
+  var userid = req.session.user._id;
+  model.updateMember(userid, req.body, function(err){
+    if(err){
+      res.json({errors: err});
+    }else{
+      res.end('success');
+    }
+  });  
 });
 // 구매 후기 등록
 router.post('/epilogue', checklogin, function(req, res, next) {
-  res.end('success');
+  var userid = req.session.user._id;
+  model.insertEpilogue(userid, req.body, function(err){
+    if(err){
+      res.json({errors: err});
+    }else{
+      res.end('success');
+    }
+  });
 });
 
 

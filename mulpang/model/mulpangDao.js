@@ -296,10 +296,62 @@ module.exports.getMember = function(userid, cb){
 
 // 회원 정보 수정
 module.exports.updateMember = function(userid, params, cb){
-	
+	var oldPassword = params.oldPassword;
+  // 이전 비밀번호로 회원 정보를 조회한다.
+  db.member.findOne({_id: userid, password: oldPassword}, function(err, member){
+    if(!member){
+      err = {message: '이전 비밀번호가 맞지 않습니다.'};
+    }else{
+      var tmpFileName = params.tmpFileName;
+      // 프로필 이미지
+      if(tmpFileName){
+        member.profileImage = member._id;
+        saveImage(tmpFileName, member.profileImage);
+      }
+      // 비밀번호
+      if(params.password.trim() != ''){
+        db.member.updateOne({_id: userid}, {$set: {password: params.password}});
+      }
+    }
+    cb(err);
+  });
 };
 
 // 쿠폰 후기 등록
 module.exports.insertEpilogue = function(userid, params, cb){
-	
+  var purchaseId = ObjectId(params.purchaseId);
+  delete params.purchaseId;
+  var epilogue = params;
+  epilogue._id = ObjectId();
+  epilogue.regDate = MyUtil.getDay();
+  epilogue.couponId = ObjectId(params.couponId);
+  epilogue.writer = userid;
+  db.epilogue.insertOne(epilogue, function(err, result){
+    if(err){
+      clog.error(err);
+      cb({message: '후기 등록에 실패했습니다. 잠시후 다시 이용해 주시기 바랍니다.'});
+      // cb(MyError.FAIL);
+    }else{
+      // 구매 컬렉션에 후기 아이디를 등록한다.
+      db.purchase.updateOne({_id: purchaseId}, {$set: {epilogueId: epilogue._id}}, function(err, result){
+        if(err){
+          clog.error(err);
+          cb({message: '후기 등록에 실패했습니다. 잠시후 다시 이용해 주시기 바랍니다.'});
+          // cb(MyError.FAIL);
+        }else{
+          clog.log(epilogue);
+          // 쿠폰 컬렉션의 후기 수와 만족도 합계를 업데이트 한다.
+          db.coupon.findOne({_id: epilogue.couponId}
+             ,{projection:{epilogueCount:1,satisfactionAvg:1}}, function(err, coupon){
+            clog.debug(err, coupon);
+            var update = {
+              $inc: {epilogueCount: 1},
+              $set: {satisfactionAvg: (coupon.satisfactionAvg * coupon.epilogueCount + parseInt(epilogue.satisfaction)) / (coupon.epilogueCount+1)}
+            };
+            db.coupon.updateOne({_id: epilogue.couponId}, update, cb);
+          });
+        }
+      });
+    }
+  });
 };
