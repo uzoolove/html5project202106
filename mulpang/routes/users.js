@@ -21,7 +21,8 @@ router.post('/profileUpload', multer({dest: tmp/*, limits: {fileSize: 1024*1024*
 router.post('/new', function(req, res, next) {
   model.registMember(req.body, function(err, result){
     if(err){
-      res.json({errors: err});
+      // res.json({errors: err});
+      next(err);
     }else{
       res.end('success');
     }
@@ -31,7 +32,8 @@ router.post('/new', function(req, res, next) {
 router.post('/simpleLogin', function(req, res, next) {
   model.login(req.body, function(err, user){
     if(err){
-      res.json({errors: err});
+      // res.json({errors: err});
+      next(err);
     }else{
       req.session.user = user;
       res.json(user);
@@ -76,7 +78,8 @@ router.put('/', checklogin, function(req, res, next) {
   var userid = req.session.user._id;
   model.updateMember(userid, req.body, function(err){
     if(err){
-      res.json({errors: err});
+      // res.json({errors: err});
+      next(err);
     }else{
       res.end('success');
     }
@@ -87,7 +90,8 @@ router.post('/epilogue', checklogin, function(req, res, next) {
   var userid = req.session.user._id;
   model.insertEpilogue(userid, req.body, function(err){
     if(err){
-      res.json({errors: err});
+      // res.json({errors: err});
+      next(err);
     }else{
       res.end('success');
     }

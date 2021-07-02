@@ -5,6 +5,7 @@ var path = require('path');
 var clog = require('clog');
 var fs = require('fs');
 var MyUtil = require('../utils/myutil');
+var MyError = require('../errors');
 
 // DB 접속
 var db;
@@ -168,7 +169,8 @@ module.exports.buyCoupon = function(params, cb){
   db.purchase.insertOne(document, function(err, result){
     if(err){
       clog.error(err);
-      cb({message: '쿠폰 구매에 실패했습니다. 잠시후 다시 시도하시기 바랍니다.'});
+      // cb({message: '쿠폰 구매에 실패했습니다. 잠시후 다시 시도하시기 바랍니다.'});
+      cb(MyError.FAIL);
     }else{
 	    // TODO 쿠폰 구매 건수를 하나 증가시킨다.
       db.coupon.updateOne({_id: document.couponId}
@@ -232,7 +234,8 @@ module.exports.registMember = function(params, cb){
   db.member.insertOne(member, function(err, result){
     if(err && err.code == 11000){
       clog.error(err);
-      err = {message: '이미 등록된 이메일입니다.'};
+      // err = {message: '이미 등록된 이메일입니다.'};
+      err = MyError.USER_DUPLICATE;
     }else{
       saveImage(params.tmpFileName, member.profileImage);
     }
@@ -245,7 +248,8 @@ module.exports.login = function(params, cb){
 	// TODO 지정한 아이디와 비밀번호로 회원 정보를 조회한다.
 	db.member.findOne(params, {projection: {profileImage: 1}}, function(err, user){
     if(!user){
-      err = {message: '아이디와 비밀번호를 확인하시기 바랍니다.'};
+      // err = {message: '아이디와 비밀번호를 확인하시기 바랍니다.'};
+      err = MyError.LOGIN_FAIL;
     }
     cb(err, user);
   });
@@ -300,7 +304,8 @@ module.exports.updateMember = function(userid, params, cb){
   // 이전 비밀번호로 회원 정보를 조회한다.
   db.member.findOne({_id: userid, password: oldPassword}, function(err, member){
     if(!member){
-      err = {message: '이전 비밀번호가 맞지 않습니다.'};
+      // err = {message: '이전 비밀번호가 맞지 않습니다.'};
+      err = MyError.PASSWORD_INCRRECT;
     }else{
       var tmpFileName = params.tmpFileName;
       // 프로필 이미지
@@ -329,15 +334,15 @@ module.exports.insertEpilogue = function(userid, params, cb){
   db.epilogue.insertOne(epilogue, function(err, result){
     if(err){
       clog.error(err);
-      cb({message: '후기 등록에 실패했습니다. 잠시후 다시 이용해 주시기 바랍니다.'});
-      // cb(MyError.FAIL);
+      // cb({message: '후기 등록에 실패했습니다. 잠시후 다시 이용해 주시기 바랍니다.'});
+      cb(MyError.FAIL);
     }else{
       // 구매 컬렉션에 후기 아이디를 등록한다.
       db.purchase.updateOne({_id: purchaseId}, {$set: {epilogueId: epilogue._id}}, function(err, result){
         if(err){
           clog.error(err);
-          cb({message: '후기 등록에 실패했습니다. 잠시후 다시 이용해 주시기 바랍니다.'});
-          // cb(MyError.FAIL);
+          // cb({message: '후기 등록에 실패했습니다. 잠시후 다시 이용해 주시기 바랍니다.'});
+          cb(MyError.FAIL);
         }else{
           clog.log(epilogue);
           // 쿠폰 컬렉션의 후기 수와 만족도 합계를 업데이트 한다.
