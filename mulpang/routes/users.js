@@ -3,6 +3,8 @@ var router = express.Router();
 var path = require('path');
 var multer = require('multer');
 var model = require('../model/mulpangDao');
+var checklogin = require('../middleware/checklogin');
+var MyUtil = require('../utils/myutil');
 
 // 회원 가입 화면
 router.get('/new', function(req, res, next) {
@@ -57,15 +59,24 @@ router.post('/login', function(req, res, next) {
   });
 });
 // 마이 페이지
-router.get('/', function(req, res, next) {
-  res.render('mypage', {title: '마이페이지', css: 'mypage.css', js: 'mypage.js'});
+router.get('/', checklogin, function(req, res, next) {
+  var userid = req.session.user._id;
+  model.getMember(userid, function(result){
+    res.render('mypage', {
+      title: '마이페이지', 
+      css: 'mypage.css', 
+      js: 'mypage.js', 
+      purchases: result, 
+      toStar: MyUtil.toStar
+    });
+  });
 });
 // 회원 정보 수정
-router.put('/', function(req, res, next) {
+router.put('/', checklogin, function(req, res, next) {
   res.end('success');
 });
 // 구매 후기 등록
-router.post('/epilogue', function(req, res, next) {
+router.post('/epilogue', checklogin, function(req, res, next) {
   res.end('success');
 });
 

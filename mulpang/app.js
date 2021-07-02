@@ -60,6 +60,9 @@ app.use('/middleware', function(req, res, next){
 
 app.use(logger('dev'));
 
+// var checklogin = require('./middleware/checklogin');
+// app.use(checklogin);
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 

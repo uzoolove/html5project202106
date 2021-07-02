@@ -3,6 +3,7 @@ var express = require('express');
 var router = express.Router();
 var model = require('../model/mulpangDao');
 var MyUtil = require('../utils/myutil');
+var checklogin = require('../middleware/checklogin');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -55,8 +56,8 @@ router.get('/coupons/:_id', function(req, res, next) {
 });
 
 // 구매 화면
-router.get('/purchases/:_id', function(req, res, next) {
-  if(req.session.user){
+router.get('/purchases/:_id', checklogin, function(req, res, next) {
+  // if(req.session.user){
     model.buyCouponForm(req.params._id, function(coupon){
       res.render('buy', { 
         title: coupon.couponName, 
@@ -65,15 +66,15 @@ router.get('/purchases/:_id', function(req, res, next) {
         js: 'buy.js' 
       });
     });
-  }else{
-    req.session.backurl = req.originalUrl;
-    res.redirect('/users/login');
-  }  
+  // }else{
+  //   req.session.backurl = req.originalUrl;
+  //   res.redirect('/users/login');
+  // }  
 });
 
 // 구매 하기
-router.post('/purchase', function(req, res, next) {
-  if(req.session.user){
+router.post('/purchase', checklogin, function(req, res, next) {
+  // if(req.session.user){
     req.body.email = req.session.user._id;
     model.buyCoupon(req.body, function(err, result){
       if(err){
@@ -82,9 +83,9 @@ router.post('/purchase', function(req, res, next) {
         res.end('success');
       }
     });
-  }else{
-    res.json({errors: {message: '로그인 후 구매 가능합니다.'}});
-  }
+  // }else{
+  //   res.json({errors: {message: '로그인 후 구매 가능합니다.'}});
+  // }
 });
 
 
