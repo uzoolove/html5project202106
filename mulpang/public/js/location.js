@@ -1,4 +1,4 @@
-Util.require('https://maps.googleapis.com/maps/api/js?key=AIzaSyBoXv_S_ciBM323Y3cOQlSJUkrOzt8WdXE&callback=initMap');
+Util.require('https://maps.googleapis.com/maps/api/js?callback=initMap');
 
 // google maps api 참조 -> https://developers.google.com/maps/documentation/javascript/tutorial?hl=ko
 
