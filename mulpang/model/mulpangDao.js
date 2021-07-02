@@ -253,7 +253,45 @@ module.exports.login = function(params, cb){
 
 // 회원 정보 조회
 module.exports.getMember = function(userid, cb){
-	
+	// purchase, coupon, epilogue 조인
+  db.purchase.aggregate([{
+    $match: {email: userid}
+  }, {
+    $lookup: {
+      from: 'coupon',
+      localField: 'couponId', // purchases.couponId
+      foreignField: '_id', // coupon._id
+      as: 'coupon'
+    }
+  }, {
+    $unwind: '$coupon'
+  }, {
+    $lookup: {
+      from: 'epilogue',
+      localField: 'epilogueId', // purchases.epilogueId
+      foreignField: '_id', // epilogue._id
+      as: 'epilogue'
+    }
+  }, {
+    $unwind: {
+      path: '$epilogue',
+      preserveNullAndEmptyArrays: true
+    }
+  }, {
+    $project: {
+      _id: 1,
+      couponId: 1,
+      regDate: 1,
+      'coupon.couponName': '$coupon.couponName',
+      'coupon.image.main': '$coupon.image.main',
+      epilogue: 1
+    }
+  }, {
+    $sort: {regDate: -1}
+  }]).toArray(function(err, result){
+    clog.debug(result);
+    cb(result);
+  });
 };
 
 // 회원 정보 수정
