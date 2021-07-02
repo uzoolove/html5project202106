@@ -47,7 +47,14 @@ router.get('/login', function(req, res, next) {
 });
 // 로그인
 router.post('/login', function(req, res, next) {
-  res.redirect('/');
+  model.login(req.body, function(err, user){
+    if(err){
+      res.render('login', {title: '로그인', errors: err});
+    }else{
+      req.session.user = user;
+      res.redirect(req.session.backurl || '/');
+    }
+  });
 });
 // 마이 페이지
 router.get('/', function(req, res, next) {

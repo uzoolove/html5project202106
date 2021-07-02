@@ -15,6 +15,21 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+/**
+ * express의 미들웨어 만드는 방법
+ * 1. (err), req, res, next 인자로 받는 함수
+ * 2. 기능 구현
+ * 3. 다음 둘중 하나의 작업으로 끝나야 한다.
+ *  - res로 클라이언트에 응답 전송(res.render(), res.end(), res.json() ...)
+ *  - 등록된 다음 미들웨어를 호출(next())
+ */
+app.use('/middleware', function(req, res, next){
+  console.log('body', req.body);
+  console.log('cookies', req.cookies);
+  console.log('session', req.session);
+  next();
+});
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -33,6 +48,13 @@ app.use(/^((?!\/couponQuantity).)*$/, session({
 }), function(req, res, next){
   // ejs 렌더링에 사용할 로그인 정보 지정
   res.locals.user = req.session.user;
+  next();
+});
+
+app.use('/middleware', function(req, res, next){
+  console.log('body', req.body);
+  console.log('cookies', req.cookies);
+  console.log('session', req.session);
   next();
 });
 

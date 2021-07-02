@@ -56,25 +56,35 @@ router.get('/coupons/:_id', function(req, res, next) {
 
 // 구매 화면
 router.get('/purchases/:_id', function(req, res, next) {
-  model.buyCouponForm(req.params._id, function(coupon){
-    res.render('buy', { 
-      title: coupon.couponName, 
-      coupon, 
-      css: 'detail.css', 
-      js: 'buy.js' 
+  if(req.session.user){
+    model.buyCouponForm(req.params._id, function(coupon){
+      res.render('buy', { 
+        title: coupon.couponName, 
+        coupon, 
+        css: 'detail.css', 
+        js: 'buy.js' 
+      });
     });
-  });
+  }else{
+    req.session.backurl = req.originalUrl;
+    res.redirect('/users/login');
+  }  
 });
 
 // 구매 하기
 router.post('/purchase', function(req, res, next) {
-  model.buyCoupon(req.body, function(err, result){
-    if(err){
-      res.json({errors: err});
-    }else{
-      res.end('success');
-    }
-  });
+  if(req.session.user){
+    req.body.email = req.session.user._id;
+    model.buyCoupon(req.body, function(err, result){
+      if(err){
+        res.json({errors: err});
+      }else{
+        res.end('success');
+      }
+    });
+  }else{
+    res.json({errors: {message: '로그인 후 구매 가능합니다.'}});
+  }
 });
 
 
